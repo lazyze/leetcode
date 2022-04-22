@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<string> subdomainVisits(vector<string>& cpdomains) {
+        vector<string> ret;
+        unordered_map<string, int> rec;
+        for (auto& it : cpdomains) {
+            //分离字符串it
+            splitstr(it, rec);
+        }
+        for (auto& it : rec) {
+            string str = to_string(it.second) + " " + it.first;
+            ret.push_back(str);
+        }
+        return ret;
+    }
+
+    void splitstr(string& str, unordered_map<string, int>& rec) {
+        int size = str.size();
+        int num = 0;
+        for (int i = 0; i < size; i++) {
+            if (str[i] == ' ') {
+                num = stoi(str.substr(0, i));
+                rec[str.substr(i + 1)] += num;
+            } else if(str[i] == '.') {
+                rec[str.substr(i + 1)] += num;
+            } 
+        }
+    }
+};

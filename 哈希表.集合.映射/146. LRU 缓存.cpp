@@ -1,74 +1,66 @@
 class LRUCache {
 public:
-    struct ListNode{
+
+    struct Node{
         int key;
-        int value;
-        ListNode* pre;
-        ListNode* next;
+        int val;
+        Node* pre;
+        Node* next;
     };
 
     LRUCache(int capacity) {
-        //***注意不能直接为capacity = capacity;
         this->capacity = capacity;
-        pro = new ListNode;
-        end = new ListNode;
+        pro = new Node;
+        end = new Node;
         pro->next = end;
-        pro->pre = nullptr;
         end->pre = pro;
-        end->next = nullptr;
-        size = 0;
     }
     
     int get(int key) {
-        if (record.find(key) != record.end()) {
-            //原位置删除节点
-            record[key]->pre->next = record[key]->next;
-            record[key]->next->pre = record[key]->pre;
-            //更新查询节点位置
-            //处理插入位置后节点
-            record[key]->next = pro->next;
-            pro->next->pre = record[key];
-            //处理插入位置前节点
-            pro->next = record[key];
-            record[key]->pre = pro;
-            return record[key]->value;
-        } else return -1;
+        if (rd.find(key) == rd.end()) return -1;
+        deleteNode(rd[key]);
+        insertNode(rd[key]);
+        return rd[key]->val;
     }
     
     void put(int key, int value) {
-        if(get(key) == -1) {
-            ListNode* build = new ListNode;
-            build->key = key;
-            build->value = value;
-            if (size < capacity){
-                size++; 
-            } else {
-                //删除最后一个节点 end->pre
-                int tmp = end->pre->key;
-                //cout << size << "," << capacity << endl;
-                //cout << key << "," << end->pre->value << endl;
-                end->pre->pre->next = end;
-                end->pre = end->pre->pre;
-                record.erase(tmp);
+        if (rd.find(key) == rd.end()) {
+            Node* node = new Node;
+            node->key = key;
+            node->val = value;
+            if(rd.size() == capacity) {
+                rd.erase(end->pre->key);
+                deleteNode(end->pre);
             }
-            //新建节点插入链表中
-            //处理插入位置后节点
-            build->next = pro->next;
-            pro->next->pre = build;
-            //处理插入位置前节点
-            pro->next = build;
-            build->pre = pro;
-            record[key] = build;
-        } else record[key]->value = value;
+            rd[key] = node;
+            insertNode(node);
+        } else {
+            deleteNode(rd[key]);
+            insertNode(rd[key]);
+            rd[key]->val = value;
+        }
     }
 
+    void deleteNode(Node* node) {
+        //操作前后两次
+        node->pre->next = node->next;
+        node->next->pre = node->pre;
+    }
+
+    void insertNode(Node* node) {
+        //处理插入位置后一个节点
+        node->next = pro->next;
+        pro->next->pre = node;
+        //处理插入位置前一个节点
+        pro->next = node;
+        node->pre = pro;
+    }
+
+private:
     int capacity;
-    int size;
-    ListNode* pro;
-    ListNode* end;
-    unordered_map<int, ListNode*> record;
-
-
+    unordered_map<int, Node*> rd;
+    Node* pro;
+    Node* end;
 };
 
 /**
