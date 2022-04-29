@@ -1,0 +1,22 @@
+lambda 侯捷c++11 14讲
+
+[...](...)mutable^ throwSpec^ ->retType^{...}
+^代表可选 只要有一个^，小括号必须要
+(...) 中是参数
+
+int id = 0;
+auto f = [id]() mutable {
+    std::cout << "id:" << id << std::endl;
+    ++id;
+};
+
+class Functor {
+private:
+    int id;
+public:
+    void operator() () {
+        std::cout << "id:" << id << std::endl;
+        ++id;
+    }
+};
+Functor f;
