@@ -29,3 +29,33 @@ public:
     //pre[]数组可简化为临时变量tmp
     //在循环中每次只需用到pre[i - 1],则数组可简化为临时变量在循环中一起更新
 };
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        //前缀和数组sum[]
+        //sum[j] - sum[i]最大
+        // for (int i = 0; i < nums.size(); i++) {
+        //     for (int j = 0; j < i; j++) {
+        //         ans = max(ans, sums[i] - sums[j]);
+        //     }
+        // }
+        int n = nums.size();
+        vector<int> sums(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            sums[i + 1] = sums[i] + nums[i];
+        }
+        int ans = -1e5;
+        //前缀和
+        // vector<int> premin(n + 1, 0);
+        // for (int i = 1; i <= n; i++) {
+        //     premin[i] = min(premin[i - 1], sums[i]);
+        // }
+        int tmp = 0;
+        for (int i = 1; i <= n; i++) {
+            ans = max(ans, sums[i] - tmp);
+            tmp = min(tmp, sums[i]);
+        }
+        return ans;
+    }
+};
