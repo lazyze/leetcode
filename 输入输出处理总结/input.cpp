@@ -22,6 +22,7 @@ void test1() {
 
 int main()
 {
-    test1();
+    //test1();
+    cout << 3 % 5 << endl;
     return 0;   
 }

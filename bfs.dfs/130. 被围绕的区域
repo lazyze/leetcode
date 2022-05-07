@@ -1,0 +1,50 @@
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        //思路,找到边界的圈，dfs所有变为圈
+        r = board.size();
+        c = board[0].size();
+        rd = board;
+        vector<vector<int>> re;
+        for (int i = 0; i < c; i++) {
+            if(board[0][i] == 'O') re.push_back({0, i});
+            if(r > 1 && board[r - 1][i] == 'O') re.push_back({r - 1, i});
+        }
+        for (int i = 0; i < r; i++) {
+            if(board[i][0] == 'O') re.push_back({i, 0});
+            if(c >1 && board[i][c - 1] == 'O') re.push_back({i, c - 1});
+        }
+        visit = vector<vector<bool>>(r, vector<bool>(c, false));
+        //cout << re.size() << endl;
+        for (auto& it : re) {
+            if(!visit[it[0]][it[1]]) {
+                dfs(it[0], it[1]);
+                //cout << it[0] << ", " << it[1] << endl;
+            }
+                
+        }
+        board = vector<vector<char>> (r, vector<char>(c, 'O'));
+        for (int i = 0; i < r; i++) {
+            for (int j = 0;j < c; j++) {
+                if(!visit[i][j]) board[i][j] = 'X';
+            }
+        }
+    }
+
+    void dfs(int i, int j) {
+        //cout << i << ", " << j << endl;
+        visit[i][j] = true;
+        for (int k = 0; k < 4; k++) {
+            int a = i + dx[k];
+            int b = j + dy[k];
+            if(a < 0 || a >= r || b < 0 || b >= c) continue;
+            if(!visit[a][b] && rd[a][b] == 'O')dfs(a, b);
+        }
+    }
+    int dx[4] = {0, 1, 0, -1};
+    int dy[4] = {1, 0, -1, 0};
+    int r;
+    int c;
+    vector<vector<char>> rd;
+    vector<vector<bool>> visit;
+};
