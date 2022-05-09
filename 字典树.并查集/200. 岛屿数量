@@ -1,0 +1,40 @@
+//并查集解法
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int r = grid.size();
+        int c = grid[0].size();
+        fa = vector<int>(r * c, 0);
+        for (int i = 0; i < r * c; i++) {
+            fa[i] = i;
+        }
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if(grid[i][j] == '0') continue;
+                for (int k = 0; k < 4; k++) {
+                    int x = i + dx[k];
+                    int y = j + dy[k];
+                    if(x < 0 || y < 0 || x >= r || y >= c) continue;
+                    if(grid[x][y] == '1') {
+                        fa[find(x * c + y)] = find(i * c + j);
+                    }
+                }
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if(grid[i][j] == '1' && fa[i * c + j] == (i * c + j)) ans++;
+            }
+        }
+        return ans;
+    }
+
+    int find(int x) {
+        if(x == fa[x]) return x;
+        return fa[x] = find(fa[x]);
+    }
+    int dx[4] = {0, 1, 0, -1};
+    int dy[4] = {1, 0, -1, 0};
+    vector<int> fa;
+};
